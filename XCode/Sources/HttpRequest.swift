@@ -16,6 +16,7 @@ public class HttpRequest {
     public var body: [UInt8] = []
     public var address: String? = ""
     public var params: [String: String] = [:]
+    public var remotePort: UInt16 = 0
 
     public init() {}
 
