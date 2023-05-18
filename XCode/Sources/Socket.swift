@@ -215,12 +215,16 @@ open class Socket: Hashable, Equatable {
         return String(cString: hostBuffer)
     }
     
+    /// This method returns  the port of the remote socket that this socket is connected to
+    /// In fact, getpeername API returns the address of the remote party of a connection
+    /// but getpeername only reads the IP address off that leaving out the port,
+    /// hence the need for this method
     public func peerport() throws -> in_port_t {
         var addr = sockaddr_in()
         return try withUnsafePointer(to: &addr) { pointer in
             var len = socklen_t(MemoryLayout<sockaddr_in>.size)
             if getpeername(self.socketFileDescriptor, UnsafeMutablePointer(OpaquePointer(pointer)), &len) != 0 {
-                throw SocketError.getSockNameFailed(Errno.description())
+                throw SocketError.getPeerNameFailed(Errno.description())
             }
             let sin_port = pointer.pointee.sin_port
         #if os(Linux)
