@@ -120,6 +120,7 @@ open class HttpServerIO {
         while self.operating, let request = try? parser.readHttpRequest(socket) {
             let request = request
             request.address = try? socket.peername()
+            request.remotePort = (try? socket.peerport()) ?? 0
             let (params, handler) = self.dispatch(request)
             request.params = params
             let response = handler(request)
